@@ -1,6 +1,6 @@
 <template>
-  <div id="app">
-<router-view></router-view>
+  <div>
+      峡谷需要你
   </div>
 </template>
 
@@ -9,6 +9,5 @@ export default {
 }
 </script>
 
-<style lang="less">
-
+<style lang="less" scoped>
 </style>
