@@ -1,0 +1,23 @@
+{
+  "id": "",
+  "name": "",
+  "font_family": "iconfont",
+  "css_prefix_text": "icon-",
+  "description": "",
+  "glyphs": [
+    {
+      "icon_id": "308621",
+      "name": "英雄联盟",
+      "font_class": "yxlm",
+      "unicode": "e622",
+      "unicode_decimal": 58914
+    },
+    {
+      "icon_id": "4319663",
+      "name": "分类-英雄联盟",
+      "font_class": "fenlei-yingxionglianmeng",
+      "unicode": "e627",
+      "unicode_decimal": 58919
+    }
+  ]
+}

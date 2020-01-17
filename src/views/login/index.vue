@@ -4,17 +4,21 @@
     title="错误提示的文案"
     type="error">
     </el-alert>-->
-    <div class="login-box">
+    <div class="login-box" >
       <div>
         <img src="./image/logo.jpg" alt>
       </div>
 
       <el-form ref="loginFormRef" :model="loginForm" :rules="logeinRule">
         <el-form-item prop="mobile">
-          <el-input v-model="loginForm.mobile" placeholder="输入你的id"></el-input>
+          <el-input v-model="loginForm.mobile" placeholder="输入你的id">
+            <i slot="prefix" class="iconfont icon-yxlm" style="fontSize:20px;color:#fbe247"></i>
+          </el-input>
         </el-form-item>
         <el-form-item prop="code">
-          <el-input v-model="loginForm.code" placeholder="输入效验码"></el-input>
+          <el-input v-model="loginForm.code" placeholder="输入效验码">
+            <i slot="prefix" class="iconfont icon-fenlei-yingxionglianmeng" style="fontSize:20px;color:#ab2424"></i>
+          </el-input>
         </el-form-item>
 
         <el-form-item style="text-align:left;" prop="xuan">
@@ -25,9 +29,9 @@
         </el-form-item>
 
         <el-form-item>
-          <el-button style="backgroundColor:#ab2424 " @click="ti()">
-            <span style="color:#fff;fontSize:18px">
-            成为SKT 替补中单</span>
+          <el-button style="backgroundColor:#ab2424 " @click="ti()" :disabled="flag" :loading="flag">
+            <span style="color:rgb(309, 222, 86);fontSize:18px">
+            {{lige}}</span>
             </el-button>
         </el-form-item>
       </el-form>
@@ -36,7 +40,8 @@
 </template>
 
 <script>
-import './gt.js'
+import './gt.js'// 映入gt插件，为做极验做准备
+import '@/assets/icon/iconfont.css'
 export default {
   data () {
     var tiao = function (rule, value, callback) {
@@ -49,6 +54,9 @@ export default {
       value ? callback() : callback(new Error('请先做好心理准备'))
     }
     return {
+      lige: '进入 联盟',
+      ctaObj: null,
+      flag: false,
       loginForm: {
         mobile: '15686249878',
         code: '246810',
@@ -57,7 +65,7 @@ export default {
       logeinRule: {
         mobile: [
           { required: true, message: '召唤师，请留下你的联系方式' }, // 验证是否写入联系方式
-          { pattern: /^1[35789]\d{9}$/, message: '联系不到你了' } // 验证填写的手机号是否通过正则
+          { pattern: /^1[35789]\d{9}$/, message: '联系不到你了' } // 验证填写的手机号是否通过正则，如果错误，则提示message的内容
         ],
         code: [{ required: true, message: '出示验证码' }], // 验证 是否写入验证码；
 
@@ -71,8 +79,15 @@ export default {
       this.$refs.loginFormRef.validate(valid => { // 表单必须设置ref才可以进行验证
         if (!valid) { // 判断valid是否为true，为true则验证通过
           return alert('召唤师，先填表')
-        }
+        }// 如果表单不通过就返回，通过后进行以下操作
+
         // 极验请求
+
+        if (this.ctaObj !== null) { //  判断极验的容器是否生成
+          return this.ctaObj.verify()
+        }
+        this.flag = true // 设置按钮禁用
+        this.lige = '单杀李哥，你就是首发'
         this.$http({
           url: '/mp/v1_0/captchas/' + this.loginForm.mobile,
           method: 'GET'
@@ -89,11 +104,16 @@ export default {
             offline: !data.success,
             new_captcha: true,
             product: 'bind' // 设置验证窗口样式的
-          }, captchaObj => {
+          },
+          captchaObj => {
             // 这里可以调用验证实例 captchaObj 的实例方法
             captchaObj.onReady(() => {
               // 验证码ready之后才能调用verify方法显示验证码(可以显示窗口了)
               captchaObj.verify() // 显示验证码窗口
+
+              this.ctaObj = captchaObj// 给这个对象赋值
+              this.flag = false// 设置按钮恢复
+              this.lige = '你还在犹豫什么'
             }).onSuccess(() => {
               // 行为校验正确的处理
               // B. 验证账号，登录系统,将验证登录封装成一个方法，在这里调用
